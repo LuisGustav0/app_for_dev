@@ -8,6 +8,11 @@ class AuthenticationParams {
     required this.email,
     required this.password,
   });
+
+  Map toJson() => {
+    'email': email,
+    'password': password,
+  };
 }
 
 abstract class Authentication {
