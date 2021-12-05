@@ -24,12 +24,13 @@ class RemoteAuthenticationParams {
   };
 }
 
-class RemoteAuthenticationUseCaseImpl {
+class RemoteAuthenticationUseCaseImpl implements AuthenticationUseCase {
   final HttpClient httpClient;
   final String url;
 
   RemoteAuthenticationUseCaseImpl({required this.httpClient, required this.url});
 
+  @override
   Future<AccountEntity> auth(AuthenticationParams params) async {
     try {
       final body = RemoteAuthenticationParams.fromDomain(params).toJson();
