@@ -13,7 +13,7 @@ class HttpAdapter implements HttpClient {
   HttpAdapter(this.client);
 
   @override
-  Future<Map?> request({
+  Future<Map> request({
     required String url,
     required String method,
     Map? headers,
@@ -27,7 +27,7 @@ class HttpAdapter implements HttpClient {
         body: body,
     );
 
-    if(response.body.isEmpty) return null;
+    if(response.body.isEmpty) return {};
 
     return jsonDecode(response.body);
   }
@@ -44,6 +44,17 @@ void main() {
   late ClientSpy client;
   late HttpAdapter sut;
 
+  When mockPostCall() => when(() =>
+      client.post(
+        any(),
+        body: any(named: 'body'),
+        headers: any(named: 'headers'),
+      ),
+  );
+
+  void mockPost(int statusCode, {String body = '{"any_key":"any_value"}'}) =>
+      mockPostCall().thenAnswer((_) async => Response(body, statusCode));
+
   setUp(() {
     url = faker.internet.httpUrl();
     uri = Uri.parse(url);
@@ -52,17 +63,13 @@ void main() {
     sut = HttpAdapter(client);
 
     registerFallbackValue(Uri());
+
+    mockPost(200);
   });
 
   group('POST', () {
     test('Should call post with correct values', () async {
       Map body = {'any_key': 'any_value'};
-
-      when(() => client.post(
-          uri,
-          headers: HttpHeader.applicationJson,
-          body: body
-      )).thenAnswer((_) async => Response('{"any_key": "any_value"}', 200));
 
       await sut.request(url: url, method: HttpMethod.post, body: body);
 
@@ -74,11 +81,6 @@ void main() {
     });
 
     test('Should call post without body', () async {
-      when(() => client.post(
-          any(),
-          headers: any(named: 'headers'),
-      )).thenAnswer((_) async => Response('{}', 200));
-
       await sut.request(url: url, method: HttpMethod.post);
 
       verify(() => client.post(
@@ -101,14 +103,11 @@ void main() {
     });
 
     test('Should return data if post returns 200 with no data', () async {
-      when(() => client.post(
-        any(),
-        headers: any(named: 'headers'),
-      )).thenAnswer((_) async => Response('', 200));
+      mockPost(200, body: '');
 
       final response = await sut.request(url: url, method: HttpMethod.post);
 
-      expect(response, null);
+      expect(response, {});
     });
   });
 }
