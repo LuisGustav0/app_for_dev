@@ -1,8 +1,8 @@
-import 'dart:convert';
-
 import 'package:http/http.dart';
 
-import '../../data/http/http.dart';
+import 'package:app_for_dev/data/http/http.dart';
+
+import 'package:app_for_dev/infra/http/http.dart';
 
 class HttpAdapter implements HttpClient {
   final Client client;
@@ -24,11 +24,6 @@ class HttpAdapter implements HttpClient {
       body: body,
     );
 
-    if(HttpStatusCode.isNoContent(response.statusCode)
-        || response.body.isEmpty) {
-      return {};
-    }
-
-    return jsonDecode(response.body);
+    return HttpAdapterHandleResponse.call(response);
   }
 }

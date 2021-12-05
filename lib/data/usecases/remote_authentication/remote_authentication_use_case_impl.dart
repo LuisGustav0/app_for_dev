@@ -1,10 +1,9 @@
-import '../../../domain/entities/entities.dart';
-import '../../../domain/helpers/helpers.dart';
-import '../../../domain/usecases/usecases.dart';
+import 'package:app_for_dev/data/http/http.dart';
+import 'package:app_for_dev/data/models/models.dart';
 
-import '../../models/models.dart';
-
-import '../../http/http.dart';
+import 'package:app_for_dev/domain/entities/entities.dart';
+import 'package:app_for_dev/domain/helpers/helpers.dart';
+import 'package:app_for_dev/domain/usecases/usecases.dart';
 
 class RemoteAuthenticationParams {
   final String email;

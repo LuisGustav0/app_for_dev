@@ -1,4 +1,4 @@
-import '../../entities/entities.dart';
+import 'package:app_for_dev/domain/entities/entities.dart';
 
 class AuthenticationParams {
   final String email;

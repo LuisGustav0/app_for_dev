@@ -1,4 +1,4 @@
 class HttpMethod {
 
-  static String get post => 'POST';
+  static const String post = 'POST';
 }

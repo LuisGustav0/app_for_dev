@@ -1,6 +1,10 @@
 class HttpStatusCode {
 
-  static int get noContent => 204;
+  static const int test = 200;
 
-  static bool isNoContent(int statusCode) => statusCode == noContent;
+  static const int ok = 200;
+
+  static const int noContent = 204;
+
+  static const int badRequest = 400;
 }
