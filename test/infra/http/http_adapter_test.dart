@@ -45,10 +45,10 @@ void main() {
 
   group('POST', () {
     test('Should call post with correct values', () async {
-      Map body = {};
+      Map body = {'any_key': 'any_value'};
 
       when(() => client.post(
-          any(),
+          uri,
           headers: HttpHeader.applicationJson,
           body: body
       )).thenAnswer((_) async => Response('{}', 200));
@@ -59,6 +59,20 @@ void main() {
           uri,
           headers: HttpHeader.applicationJson,
           body: body
+      ));
+    });
+
+    test('Should call post without body', () async {
+      when(() => client.post(
+          any(),
+          headers: any(named: 'headers'),
+      )).thenAnswer((_) async => Response('{}', 200));
+
+      await sut.request(url: url, method: HttpMethod.post);
+
+      verify(() => client.post(
+          uri,
+          headers: any(named: 'headers')
       ));
     });
   });
