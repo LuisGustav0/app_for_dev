@@ -18,11 +18,15 @@ class HttpAdapter implements HttpClient {
   }) async {
     final headers = HttpHeader.applicationJson;
 
-    final response = await client.post(
-      Uri.parse(url),
-      headers: headers,
-      body: body,
-    );
+    var response = Response('', HttpStatusCode.serverError);
+
+    if(HttpMethod.isMethodPost(method)) {
+      response = await client.post(
+        Uri.parse(url),
+        headers: headers,
+        body: body,
+      );
+    }
 
     return HttpAdapterHandleResponse.call(response);
   }

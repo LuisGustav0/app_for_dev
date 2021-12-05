@@ -13,4 +13,6 @@ class HttpStatusCode {
   static const int forbidden = 403;
 
   static const int notFound = 404;
+
+  static const int serverError = 500;
 }
