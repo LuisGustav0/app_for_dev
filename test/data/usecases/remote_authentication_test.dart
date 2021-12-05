@@ -16,7 +16,7 @@ main() {
   late String url;
 
   late HttpClientSpy httpClient;
-  late RemoteAuthentication sut;
+  late RemoteAuthenticationUseCaseImpl sut;
   late AuthenticationParams params;
 
   setUp(() {
@@ -28,7 +28,7 @@ main() {
       );
 
       httpClient = HttpClientSpy();
-      sut = RemoteAuthentication(
+      sut = RemoteAuthenticationUseCaseImpl(
         httpClient: httpClient,
         url: url,
       );

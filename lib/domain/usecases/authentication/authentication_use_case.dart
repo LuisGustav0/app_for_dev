@@ -1,4 +1,4 @@
-import '../entities/entities.dart';
+import '../../entities/entities.dart';
 
 class AuthenticationParams {
   final String email;
@@ -10,6 +10,6 @@ class AuthenticationParams {
   });
 }
 
-abstract class Authentication {
+abstract class AuthenticationUseCase {
   Future<AccountEntity> auth(AuthenticationParams params);
 }
