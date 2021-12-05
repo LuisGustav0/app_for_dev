@@ -15,6 +15,8 @@ class HttpAdapterHandleResponse {
         throw HttpError.badRequest;
       case HttpStatusCode.unauthorized:
         throw HttpError.unauthorized;
+      case HttpStatusCode.forbidden:
+        throw HttpError.forbidden;
       default:
         throw HttpError.serverError;
     }
