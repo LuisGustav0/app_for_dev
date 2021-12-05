@@ -16,16 +16,20 @@ class HttpAdapter implements HttpClient {
     Map? headers,
     Map? body,
   }) async {
-    final headers = HttpHeader.applicationJson;
 
+    final headers = HttpHeader.applicationJson;
     var response = Response('', HttpStatusCode.serverError);
 
-    if(HttpMethod.isMethodPost(method)) {
-      response = await client.post(
-        Uri.parse(url),
-        headers: headers,
-        body: body,
-      );
+    try {
+      if(HttpMethod.isMethodPost(method)) {
+        response = await client.post(
+          Uri.parse(url),
+          headers: headers,
+          body: body,
+        );
+      }
+    } catch(error) {
+      throw HttpError.serverError;
     }
 
     return HttpAdapterHandleResponse.call(response);
