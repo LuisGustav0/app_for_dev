@@ -3,6 +3,8 @@ import 'package:test/test.dart';
 import 'package:faker/faker.dart';
 import 'package:mocktail/mocktail.dart';
 
+import 'package:app_for_dev/data/http/http.dart';
+
 class HttpAdapter {
   final Client client;
 
@@ -11,8 +13,11 @@ class HttpAdapter {
   Future<dynamic> request({
     required String url,
     required String method,
+    Map? headers,
   }) async {
-    await client.post(Uri.parse(url));
+    final headers = HttpHeader.applicationJson;
+
+    await client.post(Uri.parse(url), headers: headers);
   }
 }
 
@@ -39,12 +44,17 @@ void main() {
 
   group('POST', () {
     test('Should call post with correct values', () async {
-      when(() => client.post(any()))
-          .thenAnswer((_) async => Response('{}', 200));
+      when(() => client.post(
+          any(),
+          headers: HttpHeader.applicationJson
+      )).thenAnswer((_) async => Response('{}', 200));
 
-      await sut.request(url: url, method: 'post');
+      await sut.request(url: url, method: HttpMethod.post);
 
-      verify(() => client.post(uri));
+      verify(() => client.post(
+        uri,
+        headers: HttpHeader.applicationJson
+      ));
     });
   });
 }
