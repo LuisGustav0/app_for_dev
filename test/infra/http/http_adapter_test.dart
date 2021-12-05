@@ -14,10 +14,11 @@ class HttpAdapter {
     required String url,
     required String method,
     Map? headers,
+    Map? body,
   }) async {
     final headers = HttpHeader.applicationJson;
 
-    await client.post(Uri.parse(url), headers: headers);
+    await client.post(Uri.parse(url), headers: headers, body: body);
   }
 }
 
@@ -44,16 +45,20 @@ void main() {
 
   group('POST', () {
     test('Should call post with correct values', () async {
+      Map body = {};
+
       when(() => client.post(
           any(),
-          headers: HttpHeader.applicationJson
+          headers: HttpHeader.applicationJson,
+          body: body
       )).thenAnswer((_) async => Response('{}', 200));
 
-      await sut.request(url: url, method: HttpMethod.post);
+      await sut.request(url: url, method: HttpMethod.post, body: body);
 
       verify(() => client.post(
-        uri,
-        headers: HttpHeader.applicationJson
+          uri,
+          headers: HttpHeader.applicationJson,
+          body: body
       ));
     });
   });
