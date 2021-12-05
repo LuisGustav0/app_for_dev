@@ -7,4 +7,6 @@ class HttpStatusCode {
   static const int noContent = 204;
 
   static const int badRequest = 400;
+
+  static const int unauthorized = 401;
 }
