@@ -19,36 +19,45 @@ main() {
   late RemoteAuthenticationUseCaseImpl sut;
   late AuthenticationParams params;
 
+  When mockRequest() {
+    return when(() => httpClient.request(
+      url: url,
+      method: 'POST',
+      body: {
+        'email': params.email,
+        'password': params.password,
+      })
+    );
+  }
+
+  void mockHttpData(Map data) => mockRequest().thenAnswer((_) async => data);
+
+  void mockHttpError(HttpError error) => mockRequest().thenThrow(error);
+
+  Map mockValidData() => {
+    'accessToken': faker.guid.guid(),
+    'name': faker.person.name()
+  };
+
   setUp(() {
-      url = faker.internet.httpUrl();
+    url = faker.internet.httpUrl();
 
-      params = AuthenticationParams(
-        email: faker.internet.email(),
-        password: faker.internet.password(),
-      );
+    params = AuthenticationParams(
+      email: faker.internet.email(),
+      password: faker.internet.password(),
+    );
 
-      httpClient = HttpClientSpy();
-      sut = RemoteAuthenticationUseCaseImpl(
-        httpClient: httpClient,
-        url: url,
-      );
+    httpClient = HttpClientSpy();
+
+    sut = RemoteAuthenticationUseCaseImpl(
+      httpClient: httpClient,
+      url: url,
+    );
+
+    mockHttpData(mockValidData());
   });
 
   test('Should call HttpClient with correct values', () async {
-    final accountFake = {
-      'accessToken': faker.guid.guid(),
-      'name': faker.person.name()
-    };
-
-    when(() => httpClient.request(
-        url: url,
-        method: 'POST',
-        body: {
-          'email': params.email,
-          'password': params.password,
-        }
-    )).thenAnswer((_) async => accountFake);
-
     await sut.auth(params);
 
     verify(() => httpClient.request(
@@ -62,14 +71,7 @@ main() {
   });
 
   test('Should throw UnexpectedError if HttpClient returns 400', () async {
-    when(() => httpClient.request(
-        url: url,
-        method: 'POST',
-        body: {
-          'email': params.email,
-          'password': params.password,
-        }
-    )).thenThrow(HttpError.badRequest);
+    mockHttpError(HttpError.badRequest);
 
     final future = sut.auth(params);
 
@@ -77,14 +79,7 @@ main() {
   });
 
   test('Should throw UnexpectedError if HttpClient returns 404', () async {
-    when(() => httpClient.request(
-        url: url,
-        method: 'POST',
-        body: {
-          'email': params.email,
-          'password': params.password,
-        }
-    )).thenThrow(HttpError.notFound);
+    mockHttpError(HttpError.notFound);
 
     final future = sut.auth(params);
 
@@ -92,14 +87,7 @@ main() {
   });
 
   test('Should throw UnexpectedError if HttpClient returns 500', () async {
-    when(() => httpClient.request(
-        url: url,
-        method: 'POST',
-        body: {
-          'email': params.email,
-          'password': params.password,
-        }
-    )).thenThrow(HttpError.serverError);
+    mockHttpError(HttpError.serverError);
 
     final future = sut.auth(params);
 
@@ -107,14 +95,7 @@ main() {
   });
 
   test('Should throw UnexpectedError if HttpClient returns 401', () async {
-    when(() => httpClient.request(
-        url: url,
-        method: 'POST',
-        body: {
-          'email': params.email,
-          'password': params.password,
-        }
-    )).thenThrow(HttpError.unauthorized);
+    mockHttpError(HttpError.unauthorized);
 
     final future = sut.auth(params);
 
@@ -127,14 +108,7 @@ main() {
       'name': faker.person.name()
     };
 
-    when(() => httpClient.request(
-        url: url,
-        method: 'POST',
-        body: {
-          'email': params.email,
-          'password': params.password,
-        }
-    )).thenAnswer((_) async => accountFake);
+    mockHttpData(accountFake);
 
     final account = await sut.auth(params);
 
@@ -146,14 +120,7 @@ main() {
       'invalid_key': 'invalid_value',
     };
 
-    when(() => httpClient.request(
-        url: url,
-        method: 'POST',
-        body: {
-          'email': params.email,
-          'password': params.password,
-        }
-    )).thenAnswer((_) async => accountFake);
+    mockHttpData(accountFake);
 
     final future = sut.auth(params);
 
