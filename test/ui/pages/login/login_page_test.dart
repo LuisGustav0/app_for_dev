@@ -84,9 +84,35 @@ main() {
     await loadPage(tester);
 
     emailErrorController.add('any error');
-
     await tester.pump();
 
     expect(find.text('any error'), findsOneWidget);
+  });
+
+  testWidgets('Should presenter no error if email is valid',
+          (WidgetTester tester) async {
+      await loadPage(tester);
+
+      await tester.pump();
+
+      final Finder emailTextChildren = findTextByLabel('E-Mail');
+      expect(
+        emailTextChildren,
+        findsOneWidget
+      );
+  });
+
+  testWidgets('Should presenter error if email is invalid',
+          (WidgetTester tester) async {
+      await loadPage(tester);
+
+      emailErrorController.add('');
+      await tester.pump();
+
+      final Finder emailTextChildren = findTextByLabel('E-Mail');
+      expect(
+          emailTextChildren,
+          findsOneWidget
+      );
   });
 }
