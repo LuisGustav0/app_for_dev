@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 
+import 'package:app_for_dev/ui/pages/pages.dart';
+
 import 'package:app_for_dev/ui/components/components.dart';
 
 class LoginPage extends StatelessWidget {
+  final LoginPresenter? presenter;
 
-  const LoginPage({Key? key}) : super(key: key);
+  LoginPage(this.presenter);
 
-  void _onCriarConta() {
+  void _onCreateAccount() {
 
   }
 
@@ -32,6 +35,7 @@ class LoginPage extends StatelessWidget {
                               color: Theme.of(context).primaryColorLight),
                         ),
                         keyboardType: TextInputType.emailAddress,
+                        onChanged: presenter?.validateEmail,
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 8, bottom: 32),
@@ -44,6 +48,7 @@ class LoginPage extends StatelessWidget {
                             ),
                           ),
                           obscureText: true,
+                          onChanged: presenter?.validatePassword,
                         ),
                       ),
                       const ElevatedButton(
@@ -53,7 +58,7 @@ class LoginPage extends StatelessWidget {
                       TextButton.icon(
                         label: const Text('Criar conta'),
                         icon: const Icon(Icons.person),
-                        onPressed: _onCriarConta,
+                        onPressed: _onCreateAccount,
                       ),
                     ],
                   ),

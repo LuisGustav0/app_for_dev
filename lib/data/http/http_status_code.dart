@@ -1,7 +1,5 @@
 class HttpStatusCode {
 
-  static const int test = 200;
-
   static const int ok = 200;
 
   static const int noContent = 204;

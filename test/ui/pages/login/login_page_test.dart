@@ -1,36 +1,71 @@
+import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:app_for_dev/ui/pages/pages.dart';
 
+class LoginPresenterSpy extends Mock implements LoginPresenter {}
+
 main() {
-  testWidgets('Should load with correct initial state',
-      (WidgetTester tester) async {
-    const loginPage = MaterialApp(home: LoginPage());
+  late LoginPresenter presenter;
 
-    await tester.pumpWidget(loginPage);
+  Future<void> loadPage(WidgetTester tester) async {
+    presenter = LoginPresenterSpy();
 
-    final emailTextChildren = find.descendant(
-      of: find.bySemanticsLabel('E-Mail'),
+    final loginPage = LoginPage(presenter);
+
+    await tester.pumpWidget(MaterialApp(home: loginPage));
+  }
+
+  Finder findTextByLabel(final String of) {
+    return find.descendant(
+      of: find.bySemanticsLabel(of),
       matching: find.byType(Text),
     );
-    expect(emailTextChildren, findsOneWidget,
-        reason: 'When a TextFormField has only one text child, means it '
-            'has no errors, since one of the childs is always the label text'
-    );
+  }
 
-    final passwordTextChildren = find.descendant(
-        of: find.bySemanticsLabel('Senha'),
-        matching: find.byType(Text)
-    );
+  Finder findByLabel(final String of) => find.bySemanticsLabel(of);
+
+  ElevatedButton findElevatedButton(WidgetTester tester) =>
+      tester.widget<ElevatedButton>(find.byType(ElevatedButton));
+
+  testWidgets('Should load with correct initial state',
+      (WidgetTester tester) async {
+    await loadPage(tester);
+
+    final Finder emailTextChildren = findTextByLabel('E-Mail');
     expect(
-        passwordTextChildren,
-        findsOneWidget,
-        reason: 'when a TextFormField has only one text child, means it '
-            'has no errors, since one of the childs is always the label text'
+      emailTextChildren,
+      findsOneWidget,
+      reason: 'When a TextFormField has only one text child, means it '
+          'has no errors, since one of the childs is always the label text',
     );
 
-    final button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
-    expect(button.onPressed, null);
+    final Finder passwordTextChildren = findTextByLabel('Senha');
+    expect(
+      passwordTextChildren,
+      findsOneWidget,
+      reason: 'when a TextFormField has only one text child, means it '
+          'has no errors, since one of the childs is always the label text',
+    );
+
+    final buttonEnter = findElevatedButton(tester);
+    expect(buttonEnter.onPressed, null);
+  });
+
+  testWidgets('Should call validate with correct values',
+      (WidgetTester tester) async {
+    await loadPage(tester);
+
+    final email = faker.internet.email();
+    final Finder emailTextChildren = findByLabel('E-Mail');
+    await tester.enterText(emailTextChildren, email);
+
+    final password = faker.internet.password();
+    final Finder passwordTextChildren = findByLabel('Senha');
+    await tester.enterText(passwordTextChildren, password);
+
+    verify(() => presenter.validateEmail(email));
   });
 }
