@@ -9,9 +9,7 @@ class LoginPage extends StatelessWidget {
 
   LoginPage(this.presenter);
 
-  void _onCreateAccount() {
-
-  }
+  void _onCreateAccount() {}
 
   @override
   Widget build(BuildContext context) {
@@ -25,52 +23,60 @@ class LoginPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(32),
               child: Form(
-                  child: Column(
-                    children: [
-                      StreamBuilder<String>(
-                        stream: presenter?.emailErrorController,
+                child: Column(
+                  children: [
+                    StreamBuilder<String>(
+                      stream: presenter?.emailErrorController,
+                      builder: (context, snapshot) {
+                        return TextFormField(
+                          decoration: InputDecoration(
+                            labelText: 'E-Mail',
+                            icon: Icon(
+                              Icons.email,
+                              color: Theme.of(context).primaryColorLight,
+                            ),
+                            errorText: snapshot.data?.isEmpty == true
+                                ? null
+                                : snapshot.data,
+                          ),
+                          keyboardType: TextInputType.emailAddress,
+                          onChanged: presenter?.validateEmail,
+                        );
+                      },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8, bottom: 32),
+                      child: StreamBuilder<String>(
+                        stream: presenter?.passwordErrorController,
                         builder: (context, snapshot) {
                           return TextFormField(
                             decoration: InputDecoration(
-                              labelText: 'E-Mail',
+                              labelText: 'Senha',
                               icon: Icon(
-                                  Icons.email,
-                                  color: Theme.of(context).primaryColorLight,
+                                Icons.lock,
+                                color: Theme.of(context).primaryColorLight,
                               ),
                               errorText: snapshot.data?.isEmpty == true
                                   ? null
                                   : snapshot.data,
                             ),
-                            keyboardType: TextInputType.emailAddress,
-                            onChanged: presenter?.validateEmail,
+                            obscureText: true,
+                            onChanged: presenter?.validatePassword,
                           );
-                        }
+                        },
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8, bottom: 32),
-                        child: TextFormField(
-                          decoration: InputDecoration(
-                            labelText: 'Senha',
-                            icon: Icon(
-                              Icons.lock,
-                              color: Theme.of(context).primaryColorLight,
-                            ),
-                          ),
-                          obscureText: true,
-                          onChanged: presenter?.validatePassword,
-                        ),
-                      ),
-                      const ElevatedButton(
-                        child: Text('Entrar'),
-                        onPressed: null,
-                      ),
-                      TextButton.icon(
-                        label: const Text('Criar conta'),
-                        icon: const Icon(Icons.person),
-                        onPressed: _onCreateAccount,
-                      ),
-                    ],
-                  ),
+                    ),
+                    const ElevatedButton(
+                      child: Text('Entrar'),
+                      onPressed: null,
+                    ),
+                    TextButton.icon(
+                      label: const Text('Criar conta'),
+                      icon: const Icon(Icons.person),
+                      onPressed: _onCreateAccount,
+                    ),
+                  ],
+                ),
               ),
             )
           ],
@@ -79,5 +85,3 @@ class LoginPage extends StatelessWidget {
     );
   }
 }
-
-
