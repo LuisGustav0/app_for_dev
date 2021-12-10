@@ -132,4 +132,31 @@ main() {
 
     expect(find.text('any error'), findsOneWidget);
   });
+
+  testWidgets('Should presenter no error if password is valid',
+          (WidgetTester tester) async {
+    await loadPage(tester);
+
+    await tester.pump();
+
+    final Finder passwordTextChildren = findTextByLabel('Senha');
+    expect(
+        passwordTextChildren,
+        findsOneWidget
+    );
+  });
+
+  testWidgets('Should presenter error if password is invalid',
+          (WidgetTester tester) async {
+    await loadPage(tester);
+
+    passwordErrorController.add('');
+    await tester.pump();
+
+    final Finder passwordTextChildren = findTextByLabel('Senha');
+    expect(
+        passwordTextChildren,
+        findsOneWidget
+    );
+  });
 }
