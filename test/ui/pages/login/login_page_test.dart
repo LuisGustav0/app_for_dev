@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:mocktail/mocktail.dart';
@@ -9,11 +11,19 @@ class LoginPresenterSpy extends Mock implements LoginPresenter {}
 
 main() {
   late LoginPresenter presenter;
+  late StreamController<String> emailErrorController;
+
+  tearDown(() {
+    emailErrorController.close();
+  });
 
   Future<void> loadPage(WidgetTester tester) async {
     presenter = LoginPresenterSpy();
-
     final loginPage = LoginPage(presenter);
+
+    emailErrorController = StreamController<String>();
+    when(() => presenter.emailErrorController)
+        .thenAnswer((_) => emailErrorController.stream);
 
     await tester.pumpWidget(MaterialApp(home: loginPage));
   }
@@ -67,5 +77,16 @@ main() {
     await tester.enterText(passwordTextChildren, password);
 
     verify(() => presenter.validateEmail(email));
+  });
+
+  testWidgets('Should presenter error if email is invalid',
+          (WidgetTester tester) async {
+    await loadPage(tester);
+
+    emailErrorController.add('any error');
+
+    await tester.pump();
+
+    expect(find.text('any error'), findsOneWidget);
   });
 }
