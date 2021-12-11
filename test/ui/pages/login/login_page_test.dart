@@ -74,7 +74,7 @@ main() {
     );
 
     final buttonEnter = findElevatedButton(tester);
-    expect(buttonEnter.onPressed, null);
+    expect(buttonEnter.onPressed, isNull);
   });
 
   testWidgets('Should call validate with correct values',
@@ -93,7 +93,7 @@ main() {
   });
 
   testWidgets('Should presenter error if email is invalid',
-          (WidgetTester tester) async {
+      (WidgetTester tester) async {
     await loadPage(tester);
 
     emailErrorController.add('any error');
@@ -103,34 +103,28 @@ main() {
   });
 
   testWidgets('Should presenter no error if email is valid',
-          (WidgetTester tester) async {
-      await loadPage(tester);
+      (WidgetTester tester) async {
+    await loadPage(tester);
 
-      await tester.pump();
+    await tester.pump();
 
-      final Finder emailTextChildren = findTextByLabel('E-Mail');
-      expect(
-        emailTextChildren,
-        findsOneWidget
-      );
+    final Finder emailTextChildren = findTextByLabel('E-Mail');
+    expect(emailTextChildren, findsOneWidget);
   });
 
   testWidgets('Should presenter error if email is invalid',
-          (WidgetTester tester) async {
-      await loadPage(tester);
+      (WidgetTester tester) async {
+    await loadPage(tester);
 
-      emailErrorController.add('');
-      await tester.pump();
+    emailErrorController.add('');
+    await tester.pump();
 
-      final Finder emailTextChildren = findTextByLabel('E-Mail');
-      expect(
-          emailTextChildren,
-          findsOneWidget
-      );
+    final Finder emailTextChildren = findTextByLabel('E-Mail');
+    expect(emailTextChildren, findsOneWidget);
   });
 
   testWidgets('Should presenter error if password is invalid',
-          (WidgetTester tester) async {
+      (WidgetTester tester) async {
     await loadPage(tester);
 
     passwordErrorController.add('any error');
@@ -140,34 +134,28 @@ main() {
   });
 
   testWidgets('Should presenter no error if password is valid',
-          (WidgetTester tester) async {
+      (WidgetTester tester) async {
     await loadPage(tester);
 
     await tester.pump();
 
     final Finder passwordTextChildren = findTextByLabel('Senha');
-    expect(
-        passwordTextChildren,
-        findsOneWidget
-    );
+    expect(passwordTextChildren, findsOneWidget);
   });
 
   testWidgets('Should presenter error if password is invalid',
-          (WidgetTester tester) async {
+      (WidgetTester tester) async {
     await loadPage(tester);
 
     passwordErrorController.add('');
     await tester.pump();
 
     final Finder passwordTextChildren = findTextByLabel('Senha');
-    expect(
-        passwordTextChildren,
-        findsOneWidget
-    );
+    expect(passwordTextChildren, findsOneWidget);
   });
 
   testWidgets('Should enable button if form is valid',
-          (WidgetTester tester) async {
+      (WidgetTester tester) async {
     await loadPage(tester);
 
     formValidController.add(true);
@@ -175,5 +163,16 @@ main() {
 
     final buttonEnter = findElevatedButton(tester);
     expect(buttonEnter.onPressed, isNotNull);
+  });
+
+  testWidgets('Should enable button if form is valid',
+      (WidgetTester tester) async {
+    await loadPage(tester);
+
+    formValidController.add(false);
+    await tester.pump();
+
+    final buttonEnter = findElevatedButton(tester);
+    expect(buttonEnter.onPressed, isNull);
   });
 }
