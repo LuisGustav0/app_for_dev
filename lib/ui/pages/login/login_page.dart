@@ -66,9 +66,16 @@ class LoginPage extends StatelessWidget {
                         },
                       ),
                     ),
-                    const ElevatedButton(
-                      child: Text('Entrar'),
-                      onPressed: null,
+                    StreamBuilder<bool>(
+                      stream: presenter?.formValidController,
+                      builder: (context, snapshot) {
+                        return ElevatedButton(
+                          child: const Text('Entrar'),
+                          onPressed: snapshot.data == true
+                                ? _onCreateAccount
+                                : null,
+                        );
+                      },
                     ),
                     TextButton.icon(
                       label: const Text('Criar conta'),
